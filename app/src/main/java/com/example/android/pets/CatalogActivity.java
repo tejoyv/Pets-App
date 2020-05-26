@@ -1,18 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.android.pets;
 
 import android.content.ContentValues;
@@ -36,6 +21,7 @@ import com.example.android.pets.data.PetDbHelper;
  */
 public class CatalogActivity extends AppCompatActivity {
     private PetDbHelper mDbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,10 +59,6 @@ public class CatalogActivity extends AppCompatActivity {
 
     private  void displayDatabaseInfo(){
 
-        // Create and/or open a database to read from it
-        // Similar to .open in sqlite
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         String[]projection={
                 PetContract.PetsEntry._ID,
                 PetContract.PetsEntry.COLUMN_PET_NAME,
@@ -84,7 +66,8 @@ public class CatalogActivity extends AppCompatActivity {
                 PetContract.PetsEntry.COLUMN_PET_GENDER,
                 PetContract.PetsEntry.COLUMN_PET_WEIGHT
         };
-        Cursor cursor = db.query(PetContract.PetsEntry.TABLE_NAME,projection,null,null,null,null,null);
+
+        Cursor cursor = getContentResolver().query(PetContract.PetsEntry.CONTENT_URI,projection,null,null,null);
 
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
 
