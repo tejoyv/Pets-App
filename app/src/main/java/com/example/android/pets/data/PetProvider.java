@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class PetProvider extends ContentProvider {
 
@@ -89,7 +90,28 @@ public class PetProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values)
     {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match){
+            case PETS:
+                return insertPet(uri,values);
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+    }
+
+    private Uri insertPet(Uri uri,ContentValues values){
+        // TODO: Insert a new pet into the pets database table with the given ContentValues
+        SQLiteDatabase database = mdbHelper.getWritableDatabase();
+
+        long id = database.insert(PetContract.PetsEntry.TABLE_NAME, null, values);
+
+        if(id==-1){
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+        // Once we know the ID of the new row in the table,
+        // return the new URI with the ID appended to the end of it
+        return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
